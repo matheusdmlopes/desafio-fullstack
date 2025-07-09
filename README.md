@@ -22,7 +22,17 @@ Como descrito no backend/README.md, o objetivo do desafio é construir o fronten
 
 Encontrei uma inconsistência no package manager do projeto. O projeto possui um yarn.lock (indicando o uso do package manager yarn), mas os scripts de setup envolvem uma mistura entre comandos de npm e comandos com yarn. Penso se devo corrigir esta inconsistência ou utilizar os scripts conforme orientado no backend/README.md
 
+Após tentativa de rodar o comando yarn full-setup e ter problemas com as dependências, decidi padronizar o uso do gerenciador de pacotes yarn pra aplicação.
+
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
+
+### Yarn/npm
+
+https://stackoverflow.com/questions/49589493/is-there-any-harm-in-using-npm-and-yarn-in-the-same-project
+
+https://medium.com/@rasifsahl/can-i-use-npm-and-yarn-in-the-same-project-df005e539c83
+
+https://www.sitepoint.com/yarn-vs-npm/
 
 ---

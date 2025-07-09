@@ -28,10 +28,10 @@
     "db:restart": "./database.sh restart",
     "db:logs": "./database.sh logs",
     "db:psql": "./database.sh psql",
-    "db:seed": "npm run seed",
-    "db:fresh": "npx prisma migrate reset --force && npm run seed",
+    "db:seed": "yarn seed",
+    "db:fresh": "npx prisma migrate reset --force && yarn seed",
     "setup": "chmod +x setup-env.sh && ./setup-env.sh",
-    "full-setup": "npm run setup && npm run db:setup && npm install && npx prisma generate && npx prisma migrate dev && npm run seed"
+    "full-setup": "yarn setup && yarn db:setup && yarn install && npx prisma generate && npx prisma migrate dev && yarn seed"
   },
   "dependencies": {
     "@apollo/server": "^4.7.1",
