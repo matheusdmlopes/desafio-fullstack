@@ -13,6 +13,7 @@ import { CategoryModule } from './modules/category/module'
 import { LargeTableModule } from './modules/large-table/module'
 import { PokemonModule } from './modules/pokemon/module'
 import { PostModule } from './modules/post/module'
+import { ProfileModule } from './modules/profile/module'
 import { UserModule } from './modules/user/module'
 @Module({
   controllers: [AppController],
@@ -22,7 +23,7 @@ import { UserModule } from './modules/user/module'
     ScheduleModule.forRoot(),
     PokemonModule,
     UserModule,
-    ProfileModulee,
+    ProfileModule,
     PostModule,
     CategoryModule,
     LargeTableModule,
@@ -42,5 +43,5 @@ import { UserModule } from './modules/user/module'
 export class AppModule implements NestModule {
   // TODO: verificar de passar essas exportações para dentro do módulo.
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  configure(consumer: MiddlewareConsumer) {}
+  configure(consumer: MiddlewareConsumer) { }
 }

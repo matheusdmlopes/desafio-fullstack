@@ -8,7 +8,7 @@ import { moduleMetadata } from './moduleMetadata'
 
 @Injectable()
 export class Service {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async execute(data: ExecutionDTOType<any, any>): Promise<EntityResponse> {
     let DTO = data
@@ -211,12 +211,12 @@ export class Service {
         where: { id: data.datap.id },
       })
 
-      return `{
+      return {
         data: {
           count: 1,
           items: [result],
         },
-      }`
+      }
     },
   }
 }
