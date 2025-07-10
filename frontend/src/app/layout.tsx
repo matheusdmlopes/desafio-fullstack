@@ -1,8 +1,8 @@
 "use client";
 import { ApolloProvider } from "@apollo/client";
 import { client } from "../lib/apollo";
+import Header from "../components/layout/Header";
 import "./globals.css";
-
 
 export default function RootLayout({
   children,
@@ -11,8 +11,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <ApolloProvider client={client}>{children}</ApolloProvider>
+      <body className="min-h-screen bg-gray-50">
+        <ApolloProvider client={client}>
+          <Header />
+          <main className="flex-1">
+            {children}
+          </main>
+        </ApolloProvider>
       </body>
     </html>
   );
