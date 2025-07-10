@@ -53,4 +53,5 @@ https://www.sitepoint.com/yarn-vs-npm/
 https://nextjs.org/docs/app/api-reference/cli/create-next-app
 
 https://medium.com/@tahnyybelguith/consuming-apis-with-next-js-building-data-driven-web-applications-6e4c2d35a7f4
+
 ---
