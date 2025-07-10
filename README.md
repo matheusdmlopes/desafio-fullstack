@@ -28,7 +28,9 @@ Após tentativa de rodar o comando yarn full-setup e ter problemas com as depend
 
 ### Front End
 
+Pro desenvolvimento do front end, inicialmente pensei em só fazer um dashboard com as funcionalidades básicas (CRUD), mas após maturar um pouco mais a ideia e analisar melhor os dados que já estão alimentados no banco, cheguei a ideia final de fazer algo como um website completo, tendo um frontend público onde os dados serão apenas renderizados pra visualização, e o dashboard sendo administrativo, acessível somente via autenticação (login e senha) onde lá sim, poderá ser realizado ações como adição, edição e exclusão dos dados.
 
+A ideia são rotas públicas (/pokemons, /posts, etc) e rotas protegidas (/login, /admin/*), trazendo assim uma solução "completa" dentro do contexto do projeto.
 
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
