@@ -20,9 +20,15 @@ Como descrito no backend/README.md, o objetivo do desafio é construir o fronten
 
 ## Considerações
 
+### Setup
+
 Encontrei uma inconsistência no package manager do projeto. O projeto possui um yarn.lock (indicando o uso do package manager yarn), mas os scripts de setup envolvem uma mistura entre comandos de npm e comandos com yarn. Penso se devo corrigir esta inconsistência ou utilizar os scripts conforme orientado no backend/README.md
 
 Após tentativa de rodar o comando yarn full-setup e ter problemas com as dependências, decidi padronizar o uso do gerenciador de pacotes yarn pra aplicação, visto que o package.json indica que o package manager é o yarn@1.22.22
+
+### Front End
+
+
 
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
@@ -46,4 +52,5 @@ https://www.sitepoint.com/yarn-vs-npm/
 
 https://nextjs.org/docs/app/api-reference/cli/create-next-app
 
+https://medium.com/@tahnyybelguith/consuming-apis-with-next-js-building-data-driven-web-applications-6e4c2d35a7f4
 ---
