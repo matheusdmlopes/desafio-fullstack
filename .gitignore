@@ -1,0 +1,117 @@
+# ==========================================
+# DESAFIO FULLSTACK - GITIGNORE CENTRALIZADO
+# ==========================================
+# Este arquivo substitui os .gitignore individuais
+# do backend/ e frontend/ para centralizar as regras
+
+# ==========================================
+# DEPENDENCIES & NODE MODULES
+# ==========================================
+**/node_modules/
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ==========================================
+# BUILD OUTPUTS
+# ==========================================
+# Backend (NestJS)
+backend/dist/
+
+# Frontend (Next.js)
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# ==========================================
+# ENVIRONMENT & CONFIG FILES
+# ==========================================
+.env*
+!.env.example
+backend/.env
+backend/.env_prod
+backend/ecosystem.config.prod.js
+
+# ==========================================
+# LOGS
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# ==========================================
+# TESTING & COVERAGE
+# ==========================================
+**/coverage/
+/.nyc_output
+
+# ==========================================
+# UPLOADS & USER CONTENT
+# ==========================================
+backend/uploads/
+backend/src/assets/upload/files/
+backend/atachments/
+
+# ==========================================
+# DEPLOYMENT & PRODUCTION
+# ==========================================
+frontend/.vercel
+
+# ==========================================
+# TYPESCRIPT
+# ==========================================
+*.tsbuildinfo
+frontend/next-env.d.ts
+
+# ==========================================
+# IDEs & EDITORS
+# ==========================================
+/.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# ==========================================
+# OPERATING SYSTEM
+# ==========================================
+.DS_Store
+Thumbs.db
+*.pem
+
+# ==========================================
+# SSH & SECURITY
+# ==========================================
+known_hosts
+known_hosts.pub
+
+# ==========================================
+# MISC
+# ==========================================
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp 
