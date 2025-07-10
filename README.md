@@ -27,6 +27,13 @@ Após tentativa de rodar o comando yarn full-setup e ter problemas com as depend
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
 
+### Inteligência Artificial
+
+- Cursor (IDE)
+- Claude Sonnet 4
+- Gemini 2.5 Pro
+- GPT 4o
+
 ### Yarn/npm
 
 https://stackoverflow.com/questions/49589493/is-there-any-harm-in-using-npm-and-yarn-in-the-same-project
@@ -34,5 +41,9 @@ https://stackoverflow.com/questions/49589493/is-there-any-harm-in-using-npm-and-
 https://medium.com/@rasifsahl/can-i-use-npm-and-yarn-in-the-same-project-df005e539c83
 
 https://www.sitepoint.com/yarn-vs-npm/
+
+### Next.js
+
+https://nextjs.org/docs/app/api-reference/cli/create-next-app
 
 ---
