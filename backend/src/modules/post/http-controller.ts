@@ -6,7 +6,7 @@ import { Service } from './service'
 @Controller('posts')
 @UseGuards(JwtAuthGuard)
 export class HttpController {
-  constructor(private readonly service: Service) {}
+  constructor(private readonly service: Service) { }
 
   @Post()
   async create(@Req() req: any, @Body() data: CreateDTO): Promise<EntityResponse> {

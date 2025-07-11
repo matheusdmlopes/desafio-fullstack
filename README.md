@@ -32,6 +32,8 @@ Pro desenvolvimento do front end, inicialmente pensei em só fazer um dashboard 
 
 A ideia são rotas públicas (/pokemons, /posts, etc) e rotas protegidas (/login, /admin/*), trazendo assim uma solução "completa" dentro do contexto do projeto.
 
+No consumo dos dados do backend temos tanto rotas REST quanto queries GraphQL, pra maioria dos casos estou utilizando graphql e, pro cenário específico do caso do blog irei utilizar /posts/:id , visto que no backend essa query não está implementada. Rota esta que é protegida pelo jwt, então estou buscando maneiras de, invés de comentar a proteção, fazê-la funcionar de fato.
+
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
 
@@ -57,5 +59,9 @@ https://nextjs.org/docs/app/api-reference/cli/create-next-app
 https://medium.com/@tahnyybelguith/consuming-apis-with-next-js-building-data-driven-web-applications-6e4c2d35a7f4
 
 https://daily.dev/blog/next-js-graphql-integration-basics
+
+### NestJS
+
+https://docs.nestjs.com/recipes/passport
 
 ---
