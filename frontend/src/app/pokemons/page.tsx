@@ -15,7 +15,7 @@ export default function PokemonsPage() {
     const { loading, error, data } = useQuery<GetPokemonsResponse>(GET_POKEMONS, {
         variables: {
             data: {
-                take: 50, // Load more Pokemon for better showcase
+                take: 100, // Load all Pokemon (increased from 50 to show all 80)
                 skip: 0,
             },
         },
