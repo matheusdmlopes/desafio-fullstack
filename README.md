@@ -56,4 +56,6 @@ https://nextjs.org/docs/app/api-reference/cli/create-next-app
 
 https://medium.com/@tahnyybelguith/consuming-apis-with-next-js-building-data-driven-web-applications-6e4c2d35a7f4
 
+https://daily.dev/blog/next-js-graphql-integration-basics
+
 ---
