@@ -4,7 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql'
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private reflector: Reflector) { }
 
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context)
