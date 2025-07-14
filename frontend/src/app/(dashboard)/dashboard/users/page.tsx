@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
     Search,
@@ -55,12 +55,27 @@ export default function UsersPage() {
                 take: pageSize,
                 skip: (currentPage - 1) * pageSize
             } as GetUsersDTO
-        }
+        },
+        fetchPolicy: 'cache-and-network',
+        errorPolicy: 'all',
+        notifyOnNetworkStatusChange: true
     });
 
     const [createUser, { loading: createLoading }] = useMutation<CreateUserResponse>(CREATE_USER);
     const [updateUser, { loading: updateLoading }] = useMutation<UpdateUserResponse>(UPDATE_USER);
     const [deleteUser, { loading: deleteLoading }] = useMutation<DeleteUserResponse>(DELETE_USER);
+
+    // Re-executar query quando a página muda
+    useEffect(() => {
+        refetch({
+            data: {
+                take: pageSize,
+                skip: (currentPage - 1) * pageSize
+            } as GetUsersDTO
+        });
+    }, [currentPage, pageSize, refetch]);
+
+
 
     // Dados filtrados
     const users = data?.getUsers?.data?.items || [];
@@ -69,11 +84,23 @@ export default function UsersPage() {
 
     // Filtrar usuários por busca
     const filteredUsers = useMemo(() => {
+        if (!searchTerm) return users;
         return users.filter(user =>
             user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [users, searchTerm]);
+
+    // Calcular total de páginas baseado na busca
+    const displayedUsers = searchTerm ? filteredUsers : users;
+    const actualTotalPages = searchTerm ? Math.ceil(filteredUsers.length / 10) : totalPages;
+
+    // Resetar página se for maior que o total de páginas
+    useEffect(() => {
+        if (currentPage > actualTotalPages && actualTotalPages > 0) {
+            setCurrentPage(1);
+        }
+    }, [currentPage, actualTotalPages]);
 
     // Handlers
     const handleCreateUser = async (e: React.FormEvent) => {
@@ -89,6 +116,7 @@ export default function UsersPage() {
             });
             setIsCreateModalOpen(false);
             setFormData({ email: "", name: "" });
+            setCurrentPage(1); // Reset para página 1 após criar
             refetch();
         } catch (error) {
             console.error("Erro ao criar usuário:", error);
@@ -131,6 +159,10 @@ export default function UsersPage() {
             });
             setIsDeleteModalOpen(false);
             setSelectedUser(null);
+            // Se após deletar não há usuários na página atual, volta para a anterior
+            if (displayedUsers.length === 1 && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
             refetch();
         } catch (error) {
             console.error("Erro ao deletar usuário:", error);
@@ -149,6 +181,13 @@ export default function UsersPage() {
     const openDeleteModal = (user: User) => {
         setSelectedUser(user);
         setIsDeleteModalOpen(true);
+    };
+
+    // Função para mudar página com validação
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= actualTotalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     const formatDate = (dateString: string) => {
@@ -175,6 +214,15 @@ export default function UsersPage() {
                 <div className="text-red-800">
                     <h3 className="font-medium">Erro ao carregar usuários</h3>
                     <p className="text-sm mt-1">{error.message}</p>
+                    <button
+                        onClick={() => {
+                            setCurrentPage(1);
+                            refetch();
+                        }}
+                        className="mt-2 text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                    >
+                        Tentar novamente
+                    </button>
                 </div>
             </div>
         );
@@ -206,7 +254,10 @@ export default function UsersPage() {
                             type="text"
                             placeholder="Buscar por nome ou email..."
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1); // Reset para página 1 ao buscar
+                            }}
                             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
@@ -243,7 +294,7 @@ export default function UsersPage() {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {filteredUsers.map((user) => (
+                            {displayedUsers.map((user) => (
                                 <tr key={user.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
@@ -297,15 +348,15 @@ export default function UsersPage() {
                     <div className="flex items-center justify-between">
                         <div className="flex-1 flex justify-between sm:hidden">
                             <button
-                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
                                 className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Anterior
                             </button>
                             <button
-                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                disabled={currentPage === totalPages}
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === actualTotalPages}
                                 className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Próxima
@@ -316,25 +367,26 @@ export default function UsersPage() {
                                 <p className="text-sm text-gray-700">
                                     Mostrando{' '}
                                     <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> até{' '}
-                                    <span className="font-medium">{Math.min(currentPage * pageSize, totalUsers)}</span> de{' '}
-                                    <span className="font-medium">{totalUsers}</span> usuários
+                                    <span className="font-medium">{Math.min(currentPage * pageSize, searchTerm ? filteredUsers.length : totalUsers)}</span> de{' '}
+                                    <span className="font-medium">{searchTerm ? filteredUsers.length : totalUsers}</span> usuários
+                                    {searchTerm && <span className="text-gray-500"> (filtrados)</span>}
                                 </p>
                             </div>
                             <div>
                                 <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
                                     <button
-                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                        onClick={() => handlePageChange(currentPage - 1)}
                                         disabled={currentPage === 1}
                                         className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Anterior
                                     </button>
-                                    {[...Array(Math.min(totalPages, 5))].map((_, i) => {
+                                    {[...Array(Math.min(actualTotalPages, 5))].map((_, i) => {
                                         const pageNum = i + 1;
                                         return (
                                             <button
                                                 key={pageNum}
-                                                onClick={() => setCurrentPage(pageNum)}
+                                                onClick={() => handlePageChange(pageNum)}
                                                 className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === pageNum
                                                     ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
                                                     : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
@@ -345,8 +397,8 @@ export default function UsersPage() {
                                         );
                                     })}
                                     <button
-                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                        disabled={currentPage === totalPages}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === actualTotalPages}
                                         className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Próxima
