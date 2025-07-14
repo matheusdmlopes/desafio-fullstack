@@ -64,4 +64,6 @@ https://daily.dev/blog/next-js-graphql-integration-basics
 
 https://docs.nestjs.com/recipes/passport
 
+https://blog.mocsolucoes.com.br/desenvolvimento-web/nestjs-vs-expressjs-qual-escolher/
+
 ---
