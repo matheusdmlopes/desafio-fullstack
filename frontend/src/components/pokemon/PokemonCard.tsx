@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Pokemon } from "../../lib/queries/pokemon";
+import { Pokemon } from "@/lib/queries/pokemon";
 
 interface PokemonCardProps {
     pokemon: Pokemon;

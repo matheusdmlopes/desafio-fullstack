@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, ReactNode } from 'react';
-import { useAuth, AuthState } from '../../hooks/useAuth';
+import { useAuth, AuthState } from '@/hooks/useAuth';
 
 interface AuthContextType extends AuthState {
     autoLogin: () => Promise<{ token: any; user: any; }>;
