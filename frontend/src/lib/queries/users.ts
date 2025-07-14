@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 // Tipos TypeScript
 export interface User {
-    id: string;
+    id: number;
     email: string;
     name: string;
     createdAt: string;
@@ -38,7 +38,7 @@ export interface DeleteUserResponse {
 
 // Query para buscar usuários
 export const GET_USERS = gql`
-  query GetUsers($data: GetUserDTO!) {
+  query GetUsers($data: GetUsersDTO!) {
     getUsers(data: $data) {
       data {
         items {
@@ -56,7 +56,7 @@ export const GET_USERS = gql`
 
 // Query para buscar usuário por ID
 export const GET_USER_BY_ID = gql`
-  query GetUserById($data: GetUserDTO!) {
+  query GetUserById($data: GetUsersDTO!) {
     getUsers(data: $data) {
       data {
         items {
@@ -117,10 +117,10 @@ export const DELETE_USER = gql`
 `;
 
 // DTOs para as operações
-export interface GetUserDTO {
+export interface GetUsersDTO {
     take?: number;
     skip?: number;
-    id?: string;
+    id?: number;
     email?: string;
     name?: string;
 }
@@ -131,11 +131,11 @@ export interface CreateUserDTO {
 }
 
 export interface UpdateUserDTO {
-    id: string;
+    id: number;
     email?: string;
     name?: string;
 }
 
 export interface DeleteUserDTO {
-    id: string;
+    id: number;
 } 
