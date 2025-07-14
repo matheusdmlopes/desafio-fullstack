@@ -34,6 +34,12 @@ A ideia são rotas públicas (/pokemons, /posts, etc) e rotas protegidas (/login
 
 No consumo dos dados do backend temos tanto rotas REST quanto queries GraphQL, pra maioria dos casos estou utilizando graphql e, pro cenário específico do caso do blog irei utilizar /posts/:id , visto que no backend essa query não está implementada. Rota esta que é protegida pelo jwt, então estou buscando maneiras de, invés de comentar a proteção, fazê-la funcionar de fato.
 
+### Back End
+
+No back end, haviam validações de token JWT pra todas rotas e queries (tanto REST quanto graphql), inicialmente pro desenvolvimento do front end comentei os jwtguards pra conseguir desenvolver as telas.
+
+A strategy jwt não estava criada, então pedi pro Claude criar tanto a estratégia quanto um sistema de "auto login", pra que crie um token jwt válido assim que o usuário acesse o localhost. Não é o ideal, visto que seria interessante um sistema de login e senha, mas como a table "users" não possuía o campo password, pra não adicionar uma complexidade adicional muito grande e talvez desnecessária, optei por esta linha de auto login, focando nas funcionalidades core do projeto.
+
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
 
