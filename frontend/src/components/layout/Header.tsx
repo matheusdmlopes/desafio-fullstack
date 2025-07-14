@@ -8,7 +8,6 @@ import { clsx } from "clsx";
 
 const navigation = [
     { name: "Pokemon", href: "/pokemons", icon: Zap },
-    { name: "Users", href: "/users", icon: Users },
     { name: "Blog", href: "/blog", icon: FileText },
 ];
 
