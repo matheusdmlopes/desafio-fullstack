@@ -71,11 +71,11 @@ export default function PostPage() {
     const post: Post | null = useMemo(() => {
         if (!rawPost) return null;
 
-        const author = users.find(user => user.id === rawPost.authorId);
+        const author = users.find(user => user.id === String(rawPost.authorId));
         return {
             ...rawPost,
-            author: author || { id: rawPost.authorId, name: 'Autor Desconhecido', email: '' },
-            categories: [] // For now, since categories relationship isn't available
+            author: author || { id: String(rawPost.authorId), name: 'Autor Desconhecido', email: '' },
+            categories: [] // 
         };
     }, [rawPost, users]);
 
