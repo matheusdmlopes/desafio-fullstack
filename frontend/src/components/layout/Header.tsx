@@ -57,11 +57,11 @@ export default function Header() {
                     {/* Admin/Login Link */}
                     <div className="hidden md:flex items-center">
                         <Link
-                            href="/login"
+                            href="/dashboard"
                             className="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
                         >
                             <Shield className="h-4 w-4" />
-                            <span>Admin</span>
+                            <span>Dashboard</span>
                         </Link>
                     </div>
 
@@ -104,12 +104,12 @@ export default function Header() {
                                 );
                             })}
                             <Link
-                                href="/login"
+                                href="/dashboard"
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="flex items-center space-x-2 px-3 py-2 mt-4 text-base font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition-colors"
                             >
                                 <Shield className="h-5 w-5" />
-                                <span>Admin</span>
+                                <span>Dashboard</span>
                             </Link>
                         </div>
                     </div>
