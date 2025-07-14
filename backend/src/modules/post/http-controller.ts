@@ -4,7 +4,7 @@ import { CreateDTO, DeleteDTO, EntityResponse, GetDTO, UpdateDTO } from './entit
 import { Service } from './service'
 
 @Controller('posts')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard) // Temporarily commented to allow unauthenticated access to posts/:id
 export class HttpController {
   constructor(private readonly service: Service) { }
 
@@ -55,13 +55,14 @@ export class HttpController {
     return await this.service.execute({
       datap: data,
       method: 'get',
-      tokenData: req.tokenData,
+      tokenData: req.tokenData || null, // No auth required for getById
       customData: {},
       error: undefined,
     })
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   async update(@Req() req: any, @Param('id') id: string, @Body() data: Omit<UpdateDTO, 'id'>): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)
     if (isNaN(numericId)) {
@@ -80,6 +81,7 @@ export class HttpController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   async delete(@Req() req: any, @Param('id') id: string): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)
     if (isNaN(numericId)) {
