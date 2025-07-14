@@ -21,7 +21,19 @@ export class AuthController {
                     'api-ler-user',
                     'api-criar-user',
                     'api-atualizar-user',
-                    'api-deletar-user'
+                    'api-deletar-user',
+                    'api-ler-pokemon',
+                    'api-criar-pokemon',
+                    'api-atualizar-pokemon',
+                    'api-deletar-pokemon',
+                    'api-ler-profile',
+                    'api-criar-profile',
+                    'api-atualizar-profile',
+                    'api-deletar-profile',
+                    'api-ler-large-table',
+                    'api-criar-large-table',
+                    'api-atualizar-large-table',
+                    'api-deletar-large-table'
                 ]
             },
             iat: Math.floor(Date.now() / 1000),

@@ -9,6 +9,7 @@ import { NotificationModule } from './@shared/socket/socket-module'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { DatabaseModule } from './infra/database/database.module'
+import { AuthModule } from './modules/auth/auth.module'
 import { CategoryModule } from './modules/category/module'
 import { LargeTableModule } from './modules/large-table/module'
 import { PokemonModule } from './modules/pokemon/module'
@@ -21,6 +22,7 @@ import { UserModule } from './modules/user/module'
     ConfigModule.forRoot(),
     DatabaseModule,
     ScheduleModule.forRoot(),
+    AuthModule,
     PokemonModule,
     UserModule,
     ProfileModule,
