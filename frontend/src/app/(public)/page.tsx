@@ -86,12 +86,12 @@ export default function HomePage() {
 
             {/* Admin Card */}
             <Link
-              href="/login"
+              href="/dashboard"
               className="group p-6 bg-gradient-to-br from-gray-700 to-gray-900 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="text-white">
                 <Shield className="h-8 w-8 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Admin</h3>
+                <h3 className="text-xl font-bold mb-2">Dashboard</h3>
                 <p className="text-gray-300">
                   Área administrativa para gerenciar conteúdo e dados.
                 </p>
@@ -230,8 +230,8 @@ export default function HomePage() {
               <Link href="/posts" className="text-gray-400 hover:text-white transition-colors">
                 Blog
               </Link>
-              <Link href="/login" className="text-gray-400 hover:text-white transition-colors">
-                Admin
+              <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
+                Dashboard
               </Link>
             </div>
           </div>

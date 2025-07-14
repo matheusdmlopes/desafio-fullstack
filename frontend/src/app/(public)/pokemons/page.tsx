@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Search, Filter, Zap, Grid, List } from "lucide-react";
-import { GET_POKEMONS, GetPokemonsResponse } from "../../lib/queries/pokemon";
-import PokemonCard from "../../components/pokemon/PokemonCard";
+import { GET_POKEMONS, GetPokemonsResponse } from "@/lib/queries/pokemon";
+import PokemonCard from "@/components/pokemon/PokemonCard";
 
 export default function PokemonsPage() {
     const [searchTerm, setSearchTerm] = useState("");
