@@ -86,7 +86,7 @@ export default function UsersPage() {
     const filteredUsers = useMemo(() => {
         if (!searchTerm) return users;
         return users.filter(user =>
-            user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             user.email.toLowerCase().includes(searchTerm.toLowerCase())
         );
     }, [users, searchTerm]);
@@ -106,18 +106,28 @@ export default function UsersPage() {
     const handleCreateUser = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await createUser({
+            // Tratar campo name opcional - enviar null se vazio
+            const name = formData.name.trim() === "" ? null : formData.name;
+
+            const result = await createUser({
                 variables: {
                     data: {
                         email: formData.email,
-                        name: formData.name
+                        name: name
                     } as CreateUserDTO
                 }
             });
-            setIsCreateModalOpen(false);
-            setFormData({ email: "", name: "" });
-            setCurrentPage(1); // Reset para página 1 após criar
-            refetch();
+
+            console.log("Resultado da criação:", result);
+
+            if (result.data?.createUser?.data?.items?.length) {
+                setIsCreateModalOpen(false);
+                setFormData({ email: "", name: "" });
+                setCurrentPage(1); // Reset para página 1 após criar
+                refetch();
+            } else {
+                console.error("Resposta inesperada:", result);
+            }
         } catch (error) {
             console.error("Erro ao criar usuário:", error);
         }
@@ -128,19 +138,29 @@ export default function UsersPage() {
         if (!selectedUser) return;
 
         try {
-            await updateUser({
+            // Tratar campo name opcional - enviar null se vazio
+            const name = formData.name.trim() === "" ? null : formData.name;
+
+            const result = await updateUser({
                 variables: {
                     data: {
                         id: selectedUser.id,
                         email: formData.email,
-                        name: formData.name
+                        name: name
                     } as UpdateUserDTO
                 }
             });
-            setIsEditModalOpen(false);
-            setSelectedUser(null);
-            setFormData({ email: "", name: "" });
-            refetch();
+
+            console.log("Resultado da atualização:", result);
+
+            if (result.data?.updateUser?.data?.items?.length) {
+                setIsEditModalOpen(false);
+                setSelectedUser(null);
+                setFormData({ email: "", name: "" });
+                refetch();
+            } else {
+                console.error("Resposta inesperada:", result);
+            }
         } catch (error) {
             console.error("Erro ao atualizar usuário:", error);
         }
@@ -150,20 +170,27 @@ export default function UsersPage() {
         if (!selectedUser) return;
 
         try {
-            await deleteUser({
+            const result = await deleteUser({
                 variables: {
                     data: {
                         id: selectedUser.id
                     } as DeleteUserDTO
                 }
             });
-            setIsDeleteModalOpen(false);
-            setSelectedUser(null);
-            // Se após deletar não há usuários na página atual, volta para a anterior
-            if (displayedUsers.length === 1 && currentPage > 1) {
-                setCurrentPage(currentPage - 1);
+
+            console.log("Resultado da exclusão:", result);
+
+            if (result.data?.deleteUser?.data?.items?.length) {
+                setIsDeleteModalOpen(false);
+                setSelectedUser(null);
+                // Se após deletar não há usuários na página atual, volta para a anterior
+                if (displayedUsers.length === 1 && currentPage > 1) {
+                    setCurrentPage(currentPage - 1);
+                }
+                refetch();
+            } else {
+                console.error("Resposta inesperada:", result);
             }
-            refetch();
         } catch (error) {
             console.error("Erro ao deletar usuário:", error);
         }
@@ -173,7 +200,7 @@ export default function UsersPage() {
         setSelectedUser(user);
         setFormData({
             email: user.email,
-            name: user.name
+            name: user.name || ""
         });
         setIsEditModalOpen(true);
     };
@@ -304,7 +331,7 @@ export default function UsersPage() {
                                                 </div>
                                             </div>
                                             <div className="ml-4">
-                                                <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                                                <div className="text-sm font-medium text-gray-900">{user.name || "-"}</div>
                                                 <div className="text-sm text-gray-500">ID: {user.id}</div>
                                             </div>
                                         </div>
@@ -419,14 +446,13 @@ export default function UsersPage() {
                             <form onSubmit={handleCreateUser} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Nome
+                                        Nome (opcional)
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        required
                                     />
                                 </div>
                                 <div>
@@ -472,14 +498,13 @@ export default function UsersPage() {
                             <form onSubmit={handleUpdateUser} className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                                        Nome
+                                        Nome (opcional)
                                     </label>
                                     <input
                                         type="text"
                                         value={formData.name}
                                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                        required
                                     />
                                 </div>
                                 <div>
@@ -523,7 +548,7 @@ export default function UsersPage() {
                         <div className="mt-3">
                             <h3 className="text-lg font-medium text-gray-900 mb-4">Deletar Usuário</h3>
                             <p className="text-gray-600 mb-4">
-                                Tem certeza que deseja deletar o usuário <strong>{selectedUser.name}</strong>?
+                                Tem certeza que deseja deletar o usuário <strong>{selectedUser.name || selectedUser.email}</strong>?
                                 Esta ação não pode ser desfeita.
                             </p>
                             <div className="flex gap-3 justify-end">
