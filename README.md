@@ -72,4 +72,8 @@ https://docs.nestjs.com/recipes/passport
 
 https://blog.mocsolucoes.com.br/desenvolvimento-web/nestjs-vs-expressjs-qual-escolher/
 
+### TypeScript
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/BigInt_not_serializable
+
 ---
