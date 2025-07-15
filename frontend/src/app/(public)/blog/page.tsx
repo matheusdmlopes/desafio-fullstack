@@ -16,14 +16,16 @@ import {
 import PostCard from "@/components/posts/PostCard";
 import {
     GET_POSTS,
-    GET_CATEGORIES,
     GET_USERS,
     GetPostsResponse,
-    GetCategoriesResponse,
     GetUsersResponse,
     Post,
     Author
 } from "@/lib/queries/posts";
+import {
+    GET_CATEGORIES,
+    GetCategoriesResponse
+} from "@/lib/queries/categories";
 
 export default function PostsPage() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -92,7 +94,7 @@ export default function PostsPage() {
                 post.author?.name?.toLowerCase().includes(searchTerm.toLowerCase());
 
             const matchesCategory = !selectedCategory ||
-                post.categories?.some(pc => pc.category.id === selectedCategory);
+                post.categories?.some(pc => pc.category.id === parseInt(selectedCategory, 10));
 
             const matchesStatus = statusFilter === "all" ||
                 (statusFilter === "published" && post.published) ||
