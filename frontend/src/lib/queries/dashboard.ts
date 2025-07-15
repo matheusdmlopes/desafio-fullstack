@@ -25,7 +25,7 @@ export const GET_POSTS_COUNT = gql`
 // Query para buscar contagens de categorias
 export const GET_CATEGORIES_COUNT = gql`
   query GetCategoriesCount {
-    getCategories(data: { take: 1 }) {
+    getCategorys(data: { take: 1 }) {
       data {
         count
       }
@@ -100,39 +100,39 @@ export const GET_POSTS_STATS = gql`
 
 // Tipos TypeScript para as respostas
 export interface DashboardCounts {
-    users: number;
-    posts: number;
-    categories: number;
-    pokemon: number;
-    profiles: number;
-    largeTables: number;
+  users: number;
+  posts: number;
+  categories: number;
+  pokemon: number;
+  profiles: number;
+  largeTables: number;
 }
 
 export interface RecentPost {
-    id: string;
-    title: string;
-    published: boolean;
-    createdAt: string;
-    authorId: string;
+  id: string;
+  title: string;
+  published: boolean;
+  createdAt: string;
+  authorId: string;
 }
 
 export interface PostStats {
-    total: number;
-    published: number;
-    draft: number;
-    recentCount: number; // posts nos últimos 7 dias
+  total: number;
+  published: number;
+  draft: number;
+  recentCount: number; // posts nos últimos 7 dias
 }
 
 export interface AnalyticsData {
-    recordCount: number;
-    data: Array<{
-        user_id: string;
-        user_name: string;
-        email: string;
-        total_posts: number;
-        published_posts: number;
-        user_classification: string;
-        activity_status: string;
-        engagement_score: number;
-    }>;
+  recordCount: number;
+  data: Array<{
+    user_id: string;
+    user_name: string;
+    email: string;
+    total_posts: number;
+    published_posts: number;
+    user_classification: string;
+    activity_status: string;
+    engagement_score: number;
+  }>;
 } 

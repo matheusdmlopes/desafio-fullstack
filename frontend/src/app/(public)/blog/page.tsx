@@ -69,7 +69,7 @@ export default function PostsPage() {
 
     const rawPosts = postsData?.getPosts?.data?.items || [];
     const users = usersData?.getUsers?.data?.items || [];
-    const categories = categoriesData?.getCategories?.data?.items || [];
+    const categories = categoriesData?.getCategorys?.data?.items || [];
 
     // Map posts with authors
     const posts: Post[] = useMemo(() => {
