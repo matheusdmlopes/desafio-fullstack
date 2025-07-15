@@ -144,14 +144,12 @@ export default function UsersPage() {
             const result = await updateUser({
                 variables: {
                     data: {
-                        id: selectedUser.id,
+                        id: parseInt(selectedUser.id.toString()),
                         email: formData.email,
                         name: name
-                    } as UpdateUserDTO
+                    }
                 }
             });
-
-            console.log("Resultado da atualização:", result);
 
             if (result.data?.updateUser?.data?.items?.length) {
                 setIsEditModalOpen(false);
@@ -173,17 +171,14 @@ export default function UsersPage() {
             const result = await deleteUser({
                 variables: {
                     data: {
-                        id: selectedUser.id
+                        id: parseInt(selectedUser.id.toString()) // Converter para number
                     } as DeleteUserDTO
                 }
             });
 
-            console.log("Resultado da exclusão:", result);
-
             if (result.data?.deleteUser?.data?.items?.length) {
                 setIsDeleteModalOpen(false);
                 setSelectedUser(null);
-                // Se após deletar não há usuários na página atual, volta para a anterior
                 if (displayedUsers.length === 1 && currentPage > 1) {
                     setCurrentPage(currentPage - 1);
                 }
