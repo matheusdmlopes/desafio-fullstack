@@ -21,7 +21,7 @@ export const GET_POSTS = gql`
 
 export const GET_CATEGORIES = gql`
   query GetCategories($data: GetCategoriesDTO!) {
-    getCategories(data: $data) {
+    getCategorys(data: $data) {
       data {
         count
         items {
@@ -103,7 +103,7 @@ export interface GetPostsResponse {
 }
 
 export interface GetCategoriesResponse {
-  getCategories: {
+  getCategorys: {
     data: CategoryData;
   };
 }
