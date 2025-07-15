@@ -8,7 +8,7 @@ import { createDTODBType, moduleMetadata, updateDTODBType } from '../moduleMetad
 export class MainEntity {
   @Field(() => ID)
   id: number
-  static idZod = z.number().int().positive()
+  static idZod = z.coerce.number().int().positive()
 
   @Field(() => String)
   email: string

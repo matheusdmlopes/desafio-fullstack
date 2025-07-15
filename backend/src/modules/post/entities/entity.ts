@@ -1,11 +1,11 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { Prisma } from '@prisma/client'
 import {
-    ConnectWhere,
-    GetEntityDTO,
-    MainResponse,
-    PaginationResponse,
-    createZodSchema,
+  ConnectWhere,
+  GetEntityDTO,
+  MainResponse,
+  PaginationResponse,
+  createZodSchema,
 } from 'src/@shared/graphql/types'
 import { z } from 'zod'
 import { createDTODBType, moduleMetadata, updateDTODBType } from '../moduleMetadata'
@@ -14,7 +14,7 @@ import { createDTODBType, moduleMetadata, updateDTODBType } from '../moduleMetad
 export class MainEntity {
   @Field(() => ID)
   id: number
-  static idZod = z.number().int().positive()
+  static idZod = z.coerce.number().int().positive()
 
   @Field(() => String)
   title: string
@@ -30,7 +30,7 @@ export class MainEntity {
 
   @Field(() => ID)
   authorId: number
-  static authorIdZod = z.number().int().positive()
+  static authorIdZod = z.coerce.number().int().positive()
 
   @Field(() => Date)
   createdAt: Date
@@ -46,7 +46,7 @@ export class EntityPagination extends PaginationResponse {
 }
 
 @InputType('Get' + moduleMetadata.name + 'sDTO')
-export class GetDTO extends GetEntityDTO {}
+export class GetDTO extends GetEntityDTO { }
 
 @InputType('Create' + moduleMetadata.name + 'DTO')
 export class CreateDTO implements createDTODBType {

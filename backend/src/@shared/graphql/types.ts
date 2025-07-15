@@ -147,16 +147,16 @@ export class WhereBase {
 }
 
 @InputType()
-export class AndWhere extends WhereBase {}
+export class AndWhere extends WhereBase { }
 
 @InputType()
-export class OrWhere extends WhereBase {}
+export class OrWhere extends WhereBase { }
 
 @InputType()
-export class AndWhereNot extends WhereBase {}
+export class AndWhereNot extends WhereBase { }
 
 @InputType()
-export class OrWhereNot extends WhereBase {}
+export class OrWhereNot extends WhereBase { }
 
 @InputType()
 export class GetEntityDTO {
@@ -199,7 +199,7 @@ export class GetEntityDTO {
 export class Connect {
   @Field(() => ID, { nullable: false })
   id: number
-  static idZod = z.number().int().positive().optional()
+  static idZod = z.coerce.number().int().positive().optional()
 
   static zodSchema = createZodSchema.bind(Connect)
 }

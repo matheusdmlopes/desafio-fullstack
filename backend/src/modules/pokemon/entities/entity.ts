@@ -8,7 +8,7 @@ import { createDTODBType, moduleMetadata, updateDTODBType } from '../moduleMetad
 export class MainEntity {
   @Field(() => ID)
   id: number
-  static idZod = z.number().int().positive()
+  static idZod = z.coerce.number().int().positive()
 
   @Field(() => String)
   name: string
@@ -40,7 +40,7 @@ export class EntityPagination extends PaginationResponse {
 }
 
 @InputType('Get' + moduleMetadata.name + 'sDTO')
-export class GetDTO extends GetEntityDTO {}
+export class GetDTO extends GetEntityDTO { }
 
 @InputType('Create' + moduleMetadata.name + 'DTO')
 export class CreateDTO implements createDTODBType {
