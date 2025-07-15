@@ -12,7 +12,8 @@ import {
     ToggleLeft,
     ToggleRight,
     MoreVertical,
-    RefreshCw
+    RefreshCw,
+    Calendar
 } from "lucide-react";
 import {
     GET_POSTS,
@@ -214,13 +215,16 @@ export default function PostsPage() {
         return (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <div className="text-red-800">
-                    <h3 className="font-medium">Error loading posts</h3>
+                    <h3 className="font-medium">Erro ao carregar posts</h3>
                     <p className="text-sm mt-1">{error.message}</p>
                     <button
-                        onClick={() => { setCurrentPage(1); refetch(); }}
+                        onClick={() => {
+                            setCurrentPage(1);
+                            refetch();
+                        }}
                         className="mt-2 text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                     >
-                        Try again
+                        Tentar novamente
                     </button>
                 </div>
             </div>
@@ -228,111 +232,343 @@ export default function PostsPage() {
     }
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-800">Posts</h1>
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Posts</h1>
+                    <p className="text-gray-600">Gerencie os posts do sistema</p>
+                </div>
                 <button
                     onClick={() => setIsCreateModalOpen(true)}
-                    className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition-colors"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
                 >
-                    <Plus className="h-5 w-5 mr-2" />
-                    Create Post
+                    <Plus className="h-4 w-4" />
+                    Novo Post
                 </button>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <div className="flex items-center mb-4">
-                    <Search className="text-gray-400 mr-2" />
-                    <input
-                        type="text"
-                        placeholder="Search posts..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    />
+
+            {/* Filtros e busca */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <input
+                            type="text"
+                            placeholder="Buscar por título ou conteúdo..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1); // Reset para página 1 ao buscar
+                            }}
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => refetch()}
+                            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                            <RefreshCw className="h-4 w-4" />
+                            Atualizar
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            {/* Tabela de posts */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
+                    <table className="w-full">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Post
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Criado em
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Ações
+                                </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {displayedPosts.map(post => (
-                                <tr key={post.id}>
+                            {displayedPosts.map((post) => (
+                                <tr key={post.id} className="hover:bg-gray-50">
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="font-medium text-gray-900">{post.title}</div>
-                                        <div className="text-sm text-gray-500 truncate" style={{ maxWidth: '30ch' }}>{post.content}</div>
+                                        <div className="flex items-center">
+                                            <div className="flex-shrink-0 h-10 w-10">
+                                                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                    <FileText className="h-5 w-5 text-blue-600" />
+                                                </div>
+                                            </div>
+                                            <div className="ml-4">
+                                                <div className="text-sm font-medium text-gray-900">{post.title}</div>
+                                                <div className="text-sm text-gray-500 truncate max-w-xs">
+                                                    {post.content ? post.content.substring(0, 60) + (post.content.length > 60 ? '...' : '') : '-'}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${post.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                                            {post.published ? 'Published' : 'Draft'}
+                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${post.published
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-yellow-100 text-yellow-800'
+                                            }`}>
+                                            {post.published ? 'Publicado' : 'Rascunho'}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(post.createdAt)}</td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button onClick={() => openEditModal(post)} className="text-blue-600 hover:text-blue-900 mr-4"><Edit className="h-5 w-5" /></button>
-                                        <button onClick={() => openDeleteModal(post)} className="text-red-600 hover:text-red-900"><Trash2 className="h-5 w-5" /></button>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center">
+                                            <Calendar className="h-4 w-4 text-gray-400 mr-2" />
+                                            <span className="text-sm text-gray-900">{formatDate(post.createdAt)}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div className="flex items-center space-x-2">
+                                            <button
+                                                onClick={() => openEditModal(post)}
+                                                className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => openDeleteModal(post)}
+                                                className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
-                <div className="flex justify-between items-center mt-4">
-                    <span className="text-sm text-gray-700">Page {currentPage} of {actualTotalPages}</span>
-                    <div>
-                        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="px-3 py-1 border rounded-md mr-2 disabled:opacity-50">Previous</button>
-                        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === actualTotalPages} className="px-3 py-1 border rounded-md disabled:opacity-50">Next</button>
+
+                {/* Paginação */}
+                <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex-1 flex justify-between sm:hidden">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Anterior
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === actualTotalPages}
+                                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Próxima
+                            </button>
+                        </div>
+                        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p className="text-sm text-gray-700">
+                                    Mostrando{' '}
+                                    <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> até{' '}
+                                    <span className="font-medium">{Math.min(currentPage * pageSize, searchTerm ? filteredPosts.length : totalPosts)}</span> de{' '}
+                                    <span className="font-medium">{searchTerm ? filteredPosts.length : totalPosts}</span> posts
+                                    {searchTerm && <span className="text-gray-500"> (filtrados)</span>}
+                                </p>
+                            </div>
+                            <div>
+                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Anterior
+                                    </button>
+                                    {[...Array(Math.min(actualTotalPages, 5))].map((_, i) => {
+                                        const pageNum = i + 1;
+                                        return (
+                                            <button
+                                                key={pageNum}
+                                                onClick={() => handlePageChange(pageNum)}
+                                                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === pageNum
+                                                    ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                                                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {pageNum}
+                                            </button>
+                                        );
+                                    })}
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === actualTotalPages}
+                                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Próxima
+                                    </button>
+                                </nav>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Create/Edit Modals */}
-            {(isCreateModalOpen || isEditModalOpen) && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-6">{isCreateModalOpen ? 'Create Post' : 'Edit Post'}</h2>
-                        <form onSubmit={isCreateModalOpen ? handleCreatePost : handleUpdatePost}>
-                            <div className="mb-4">
-                                <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-                                <input type="text" id="title" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="content" className="block text-sm font-medium text-gray-700">Content</label>
-                                <textarea id="content" value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm" rows={4}></textarea>
-                            </div>
-                            <div className="mb-6">
-                                <label className="flex items-center">
-                                    <input type="checkbox" checked={formData.published} onChange={e => setFormData({ ...formData, published: e.target.checked })} className="rounded text-blue-500" />
-                                    <span className="ml-2 text-sm text-gray-700">Published</span>
-                                </label>
-                            </div>
-                            <div className="flex justify-end">
-                                <button type="button" onClick={() => { setIsCreateModalOpen(false); setIsEditModalOpen(false); }} className="mr-4 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
-                                <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600" disabled={createLoading || updateLoading}>
-                                    {isCreateModalOpen ? (createLoading ? 'Creating...' : 'Create') : (updateLoading ? 'Saving...' : 'Save Changes')}
-                                </button>
-                            </div>
-                        </form>
+            {/* Modal de Criar Post */}
+            {isCreateModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div className="mt-3">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Criar Novo Post</h3>
+                            <form onSubmit={handleCreatePost} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Título
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Conteúdo
+                                    </label>
+                                    <textarea
+                                        value={formData.content}
+                                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        rows={4}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.published}
+                                            onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        />
+                                        <span className="ml-2 text-sm text-gray-700">Publicar</span>
+                                    </label>
+                                </div>
+                                <div className="flex gap-3 justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsCreateModalOpen(false)}
+                                        className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={createLoading}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        {createLoading ? "Criando..." : "Criar"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Delete Confirmation Modal */}
+            {/* Modal de Editar Post */}
+            {isEditModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div className="mt-3">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Post</h3>
+                            <form onSubmit={handleUpdatePost} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Título
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Conteúdo
+                                    </label>
+                                    <textarea
+                                        value={formData.content}
+                                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        rows={4}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={formData.published}
+                                            onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                                            className="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                                        />
+                                        <span className="ml-2 text-sm text-gray-700">Publicar</span>
+                                    </label>
+                                </div>
+                                <div className="flex gap-3 justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsEditModalOpen(false)}
+                                        className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={updateLoading}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        {updateLoading ? "Salvando..." : "Salvar"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Deletar Post */}
             {isDeleteModalOpen && selectedPost && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-4">Delete Post</h2>
-                        <p className="text-gray-600 mb-6">Are you sure you want to delete the post "{selectedPost.title}"? This action cannot be undone.</p>
-                        <div className="flex justify-end">
-                            <button onClick={() => setIsDeleteModalOpen(false)} className="mr-4 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">Cancel</button>
-                            <button onClick={handleDeletePost} className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700" disabled={deleteLoading}>
-                                {deleteLoading ? 'Deleting...' : 'Delete'}
-                            </button>
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div className="mt-3">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Deletar Post</h3>
+                            <p className="text-gray-600 mb-4">
+                                Tem certeza que deseja deletar o post <strong>{selectedPost.title}</strong>?
+                                Esta ação não pode ser desfeita.
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsDeleteModalOpen(false)}
+                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleDeletePost}
+                                    disabled={deleteLoading}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    {deleteLoading ? "Deletando..." : "Deletar"}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
