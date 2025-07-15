@@ -168,7 +168,12 @@ export default function PokemonPage() {
 
     const openEditModal = (pokemon: Pokemon) => {
         setSelectedPokemon(pokemon);
-        setFormData(pokemon);
+        setFormData({
+            name: pokemon.name,
+            type: pokemon.type,
+            ability: pokemon.ability,
+            image: pokemon.image
+        });
         setIsEditModalOpen(true);
     };
 
