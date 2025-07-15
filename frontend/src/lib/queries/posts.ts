@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { Category } from "./categories";
 
 export const GET_POSTS = gql`
   query GetPosts($data: GetPostsDTO!) {
@@ -13,20 +14,6 @@ export const GET_POSTS = gql`
           authorId
           createdAt
           updatedAt
-        }
-      }
-    }
-  }
-`;
-
-export const GET_CATEGORIES = gql`
-  query GetCategories($data: GetCategoriesDTO!) {
-    getCategorys(data: $data) {
-      data {
-        count
-        items {
-          id
-          name
         }
       }
     }
@@ -106,11 +93,6 @@ export interface Author {
   email: string;
 }
 
-export interface Category {
-  id: string;
-  name: string;
-}
-
 export interface PostCategory {
   category: Category;
 }
@@ -133,11 +115,6 @@ export interface PostData {
   items: Post[];
 }
 
-export interface CategoryData {
-  count: number;
-  items: Category[];
-}
-
 export interface UserData {
   count: number;
   items: Author[];
@@ -146,12 +123,6 @@ export interface UserData {
 export interface GetPostsResponse {
   getPosts: {
     data: PostData;
-  };
-}
-
-export interface GetCategoriesResponse {
-  getCategorys: {
-    data: CategoryData;
   };
 }
 
