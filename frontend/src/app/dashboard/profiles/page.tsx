@@ -8,7 +8,8 @@ import {
     Edit,
     Trash2,
     UserCircle,
-    RefreshCw
+    RefreshCw,
+    Calendar
 } from "lucide-react";
 import {
     GET_PROFILES,
@@ -147,98 +148,381 @@ export default function ProfilesPage() {
         setIsEditModalOpen(true);
     };
 
-    if (loading || usersLoading) return <div className="flex justify-center items-center h-64"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>;
-    if (error) return <div className="text-red-500 p-4">Error: {error.message}</div>;
+    const displayedProfiles = searchTerm ? filteredProfiles : profilesWithUserName;
+    const actualTotalPages = searchTerm ? Math.ceil(filteredProfiles.length / 10) : totalPages;
 
-    return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">User Profiles</h1>
-            <div className="bg-white p-4 rounded-lg shadow">
-                <div className="flex justify-between mb-4">
-                    <div className="flex items-center w-full max-w-xs">
-                        <Search className="text-gray-400 mr-2" />
-                        <input
-                            type="text"
-                            placeholder="Search by user name..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full border-gray-300 rounded-md shadow-sm"
-                        />
-                    </div>
+    // Resetar página se for maior que o total de páginas
+    useEffect(() => {
+        if (currentPage > actualTotalPages && actualTotalPages > 0) {
+            setCurrentPage(1);
+        }
+    }, [currentPage, actualTotalPages]);
+
+    // Função para mudar página com validação
+    const handlePageChange = (newPage: number) => {
+        if (newPage >= 1 && newPage <= actualTotalPages) {
+            setCurrentPage(newPage);
+        }
+    };
+
+    const formatDate = (dateString: string) => {
+        return new Date(dateString).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+
+    const openDeleteModal = (profile: Profile) => {
+        setSelectedProfile(profile);
+        setIsDeleteModalOpen(true);
+    };
+
+    if (loading || usersLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <div className="text-red-800">
+                    <h3 className="font-medium">Erro ao carregar perfis</h3>
+                    <p className="text-sm mt-1">{error.message}</p>
                     <button
-                        onClick={() => setIsCreateModalOpen(true)}
-                        className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600"
+                        onClick={() => {
+                            setCurrentPage(1);
+                            refetch();
+                        }}
+                        className="mt-2 text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
                     >
-                        <Plus className="h-5 w-5 mr-2" />
-                        Create Profile
+                        Tentar novamente
                     </button>
                 </div>
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left">User</th>
-                            <th className="px-6 py-3 text-left">Bio</th>
-                            <th className="px-6 py-3 text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredProfiles.map(profile => (
-                            <tr key={profile.id}>
-                                <td className="px-6 py-4">{profile.userName}</td>
-                                <td className="px-6 py-4">{profile.bio}</td>
-                                <td className="px-6 py-4 text-right">
-                                    <button onClick={() => openEditModal(profile)} className="text-blue-600 mr-4"><Edit size={20} /></button>
-                                    <button onClick={() => { setSelectedProfile(profile); setIsDeleteModalOpen(true); }} className="text-red-600"><Trash2 size={20} /></button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            </div>
+        );
+    }
+
+    return (
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Perfis</h1>
+                    <p className="text-gray-600">Gerencie os perfis dos usuários</p>
+                </div>
+                <button
+                    onClick={() => setIsCreateModalOpen(true)}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
+                >
+                    <Plus className="h-4 w-4" />
+                    Novo Perfil
+                </button>
             </div>
 
-            {(isCreateModalOpen || isEditModalOpen) && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-6">{isCreateModalOpen ? 'Create Profile' : 'Edit Profile'}</h2>
-                        <form onSubmit={isCreateModalOpen ? handleCreateProfile : handleUpdateProfile}>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">User</label>
-                                <select
-                                    value={formData.userId}
-                                    onChange={e => setFormData({ ...formData, userId: e.target.value })}
-                                    className="mt-1 block w-full border-gray-300 rounded-md"
-                                    required
-                                    disabled={isEditModalOpen}
-                                >
-                                    <option value="">Select a User</option>
-                                    {users.map(user => <option key={user.id} value={user.id}>{user.name || user.email}</option>)}
-                                </select>
+            {/* Filtros e busca */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
+                    <div className="flex-1 relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <input
+                            type="text"
+                            placeholder="Buscar por nome de usuário..."
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                                setCurrentPage(1); // Reset para página 1 ao buscar
+                            }}
+                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => refetch()}
+                            className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors"
+                        >
+                            <RefreshCw className="h-4 w-4" />
+                            Atualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Tabela de perfis */}
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-50">
+                            <tr>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Usuário
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Bio
+                                </th>
+                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Ações
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody className="bg-white divide-y divide-gray-200">
+                            {displayedProfiles.map((profile) => (
+                                <tr key={profile.id} className="hover:bg-gray-50">
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        <div className="flex items-center">
+                                            <div className="flex-shrink-0 h-10 w-10">
+                                                <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                                    <UserCircle className="h-5 w-5 text-blue-600" />
+                                                </div>
+                                            </div>
+                                            <div className="ml-4">
+                                                <div className="text-sm font-medium text-gray-900">{profile.userName}</div>
+                                                <div className="text-sm text-gray-500">ID: #{profile.userId}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        <div className="text-sm text-gray-900 max-w-xs truncate">
+                                            {profile.bio || '-'}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div className="flex items-center space-x-2">
+                                            <button
+                                                onClick={() => openEditModal(profile)}
+                                                className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+                                            >
+                                                <Edit className="h-4 w-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => openDeleteModal(profile)}
+                                                className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Paginação */}
+                <div className="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex-1 flex justify-between sm:hidden">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Anterior
+                            </button>
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === actualTotalPages}
+                                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Próxima
+                            </button>
+                        </div>
+                        <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                            <div>
+                                <p className="text-sm text-gray-700">
+                                    Mostrando{' '}
+                                    <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> até{' '}
+                                    <span className="font-medium">{Math.min(currentPage * pageSize, searchTerm ? filteredProfiles.length : totalProfiles)}</span> de{' '}
+                                    <span className="font-medium">{searchTerm ? filteredProfiles.length : totalProfiles}</span> perfis
+                                    {searchTerm && <span className="text-gray-500"> (filtrados)</span>}
+                                </p>
                             </div>
-                            <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Bio</label>
-                                <textarea value={formData.bio} onChange={e => setFormData({ ...formData, bio: e.target.value })} className="mt-1 block w-full border-gray-300 rounded-md" rows={3}></textarea>
+                            <div>
+                                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                                    <button
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Anterior
+                                    </button>
+                                    {[...Array(Math.min(actualTotalPages, 5))].map((_, i) => {
+                                        const pageNum = i + 1;
+                                        return (
+                                            <button
+                                                key={pageNum}
+                                                onClick={() => handlePageChange(pageNum)}
+                                                className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === pageNum
+                                                    ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                                                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                                                    }`}
+                                            >
+                                                {pageNum}
+                                            </button>
+                                        );
+                                    })}
+                                    <button
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === actualTotalPages}
+                                        className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Próxima
+                                    </button>
+                                </nav>
                             </div>
-                            <div className="flex justify-end">
-                                <button type="button" onClick={() => { setIsCreateModalOpen(false); setIsEditModalOpen(false) }} className="mr-4 px-4 py-2 rounded-md">Cancel</button>
-                                <button type="submit" className="px-4 py-2 text-white bg-blue-500 rounded-md" disabled={createLoading || updateLoading}>
-                                    {isCreateModalOpen ? 'Create' : 'Save Changes'}
-                                </button>
-                            </div>
-                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Modal de Criar Perfil */}
+            {isCreateModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div className="mt-3">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Criar Novo Perfil</h3>
+                            <form onSubmit={handleCreateProfile} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Usuário
+                                    </label>
+                                    <select
+                                        value={formData.userId}
+                                        onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        required
+                                    >
+                                        <option value="">Selecione um usuário</option>
+                                        {users.map(user => (
+                                            <option key={user.id} value={user.id}>
+                                                {user.name || user.email}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Bio
+                                    </label>
+                                    <textarea
+                                        value={formData.bio}
+                                        onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        rows={3}
+                                        placeholder="Descreva o perfil do usuário..."
+                                    />
+                                </div>
+                                <div className="flex gap-3 justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsCreateModalOpen(false)}
+                                        className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={createLoading}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        {createLoading ? "Criando..." : "Criar"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             )}
 
+            {/* Modal de Editar Perfil */}
+            {isEditModalOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div className="mt-3">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Editar Perfil</h3>
+                            <form onSubmit={handleUpdateProfile} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Usuário
+                                    </label>
+                                    <select
+                                        value={formData.userId}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100 cursor-not-allowed"
+                                        disabled
+                                    >
+                                        {users.map(user => (
+                                            <option key={user.id} value={user.id}>
+                                                {user.name || user.email}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-xs text-gray-500 mt-1">O usuário não pode ser alterado</p>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Bio
+                                    </label>
+                                    <textarea
+                                        value={formData.bio}
+                                        onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        rows={3}
+                                        placeholder="Descreva o perfil do usuário..."
+                                    />
+                                </div>
+                                <div className="flex gap-3 justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsEditModalOpen(false)}
+                                        className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        disabled={updateLoading}
+                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        {updateLoading ? "Salvando..." : "Salvar"}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal de Deletar Perfil */}
             {isDeleteModalOpen && selectedProfile && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-                        <h2 className="text-2xl font-bold mb-4">Delete Profile</h2>
-                        <p className="text-gray-600 mb-6">Are you sure you want to delete the profile for {users.find(u => u.id === selectedProfile.userId)?.name}?</p>
-                        <div className="flex justify-end">
-                            <button onClick={() => setIsDeleteModalOpen(false)} className="mr-4 px-4 py-2 rounded-md">Cancel</button>
-                            <button onClick={handleDeleteProfile} className="px-4 py-2 text-white bg-red-600 rounded-md" disabled={deleteLoading}>
-                                {deleteLoading ? 'Deleting...' : 'Delete'}
-                            </button>
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <div className="mt-3">
+                            <h3 className="text-lg font-medium text-gray-900 mb-4">Deletar Perfil</h3>
+                            <p className="text-gray-600 mb-4">
+                                Tem certeza que deseja deletar o perfil do usuário <strong>{users.find(u => u.id === selectedProfile.userId)?.name || 'Usuário'}</strong>?
+                                Esta ação não pode ser desfeita.
+                            </p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsDeleteModalOpen(false)}
+                                    className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    onClick={handleDeleteProfile}
+                                    disabled={deleteLoading}
+                                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    {deleteLoading ? "Deletando..." : "Deletar"}
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
