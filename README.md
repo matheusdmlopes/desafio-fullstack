@@ -28,6 +28,15 @@ Após tentativa de rodar o comando yarn full-setup e ter problemas com as depend
 
 Implementei as configurações do docker pra aplicação inteira, agora tudo está dockerizado, tanto o front em next, quanto o backend e o banco de dados. Tudo é subido com o comando docker compose up --build OU ./docker-helper.sh dev
 
+```bash
+# 1. Clone o repositório
+git clone <url-do-repositorio>
+cd desafio-fullstack
+
+# 2. Execute tudo com Docker
+docker compose up --build
+```
+
 ### Front End
 
 Pro desenvolvimento do front end, inicialmente pensei em só fazer um dashboard com as funcionalidades básicas (CRUD), mas após maturar um pouco mais a ideia e analisar melhor os dados que já estão alimentados no banco, cheguei a ideia final de fazer algo como um website completo, tendo um frontend público onde os dados serão apenas renderizados pra visualização, e o dashboard sendo administrativo, acessível somente via autenticação (login e senha) onde lá sim, poderá ser realizado ações como adição, edição e exclusão dos dados.
