@@ -1,14 +1,27 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common'
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger'
 import { JwtAuthGuard } from 'src/@shared/guards/jwtAuth.guard'
 import { CreateDTO, DeleteDTO, EntityResponse, GetDTO, UpdateDTO } from './entities/entity'
 import { Service } from './service'
 
+@ApiTags('🐾 Pokemon')
 @Controller('pokemon')
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('JWT-auth')
 export class HttpController {
-  constructor(private readonly service: Service) {}
+  constructor(private readonly service: Service) { }
 
   @Post()
+  @ApiOperation({
+    summary: '✨ Create New Pokemon',
+    description: `
+      **Adiciona um novo Pokemon ao catálogo.**
+      
+      **🔐 Requer:** Permissão \`api-criar-pokemon\`
+    `
+  })
+  @ApiResponse({ status: 201, description: 'Pokemon criado com sucesso' })
+  @ApiResponse({ status: 400, description: 'Nome já existe ou dados inválidos' })
   async create(@Req() req: any, @Body() data: CreateDTO): Promise<EntityResponse> {
     return await this.service.execute({
       datap: data,
@@ -20,6 +33,50 @@ export class HttpController {
   }
 
   @Get()
+  @ApiOperation({
+    summary: '🐾 List All Pokemon',
+    description: `
+      **Lista completa do catálogo Pokemon com paginação.**
+      
+      **Funcionalidades:**
+      - ✅ Catálogo completo com tipos e habilidades
+      - ✅ Paginação eficiente
+      - ✅ Ordenação por data de criação
+      
+      **🔐 Requer:** Permissão \`api-ler-pokemon\`
+    `
+  })
+  @ApiQuery({ name: 'skip', required: false, type: 'number', description: 'Pular registros', example: 0 })
+  @ApiQuery({ name: 'take', required: false, type: 'number', description: 'Quantos retornar', example: 10 })
+  @ApiResponse({
+    status: 200,
+    description: 'Catálogo Pokemon retornado com sucesso',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'object',
+          properties: {
+            count: { type: 'number', example: 80 },
+            items: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: { type: 'number', example: 1 },
+                  name: { type: 'string', example: 'Pikachu' },
+                  type: { type: 'string', example: 'Electric' },
+                  ability: { type: 'string', example: 'Static' },
+                  image: { type: 'string', example: 'https://example.com/pikachu.jpg' },
+                  createdAt: { type: 'string', format: 'date-time' }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  })
   async getAll(@Req() req: any, @Query() query: any): Promise<EntityResponse> {
     const data: GetDTO = {
       skip: query.skip ? parseInt(query.skip) : undefined,
@@ -41,7 +98,12 @@ export class HttpController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '🔍 Get Pokemon by ID',
+    description: 'Busca um Pokemon específico pelo ID.'
+  })
+  @ApiResponse({ status: 200, description: 'Pokemon encontrado' })
+  @ApiResponse({ status: 404, description: 'Pokemon não encontrado' })
   async getById(@Req() req: any, @Param('id') id: string): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)
     if (isNaN(numericId)) {
@@ -63,7 +125,10 @@ export class HttpController {
   }
 
   @Put(':id')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '📝 Update Pokemon',
+    description: 'Atualiza dados de um Pokemon existente.'
+  })
   async update(@Req() req: any, @Param('id') id: string, @Body() data: Omit<UpdateDTO, 'id'>): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)
     if (isNaN(numericId)) {
@@ -82,7 +147,10 @@ export class HttpController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({
+    summary: '🗑️ Delete Pokemon',
+    description: 'Remove um Pokemon do catálogo.'
+  })
   async delete(@Req() req: any, @Param('id') id: string): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)
     if (isNaN(numericId)) {
@@ -100,4 +168,3 @@ export class HttpController {
     })
   }
 }
- 
