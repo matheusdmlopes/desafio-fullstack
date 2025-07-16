@@ -3,8 +3,6 @@
 # PostgreSQL + Backend + Frontend
 # ============================================
 
-version: '3.8'
-
 services:
   # ==================== PostgreSQL ====================
   postgres:
