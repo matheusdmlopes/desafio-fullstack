@@ -26,6 +26,8 @@ Encontrei uma inconsistência no package manager do projeto. O projeto possui um
 
 Após tentativa de rodar o comando yarn full-setup e ter problemas com as dependências, decidi padronizar o uso do gerenciador de pacotes yarn pra aplicação, visto que o package.json indica que o package manager é o yarn@1.22.22
 
+Implementei as configurações do docker pra aplicação inteira, agora tudo está dockerizado, tanto o front em next, quanto o backend e o banco de dados. Tudo é subido com o comando docker compose up --build OU ./docker-helper.sh dev
+
 ### Front End
 
 Pro desenvolvimento do front end, inicialmente pensei em só fazer um dashboard com as funcionalidades básicas (CRUD), mas após maturar um pouco mais a ideia e analisar melhor os dados que já estão alimentados no banco, cheguei a ideia final de fazer algo como um website completo, tendo um frontend público onde os dados serão apenas renderizados pra visualização, e o dashboard sendo administrativo, acessível somente via autenticação (login e senha) onde lá sim, poderá ser realizado ações como adição, edição e exclusão dos dados.
@@ -39,6 +41,10 @@ No consumo dos dados do backend temos tanto rotas REST quanto queries GraphQL, p
 No back end, haviam validações de token JWT pra todas rotas e queries (tanto REST quanto graphql), inicialmente pro desenvolvimento do front end comentei os jwtguards pra conseguir desenvolver as telas.
 
 A strategy jwt não estava criada, então pedi pro Claude criar tanto a estratégia quanto um sistema de "auto login", pra que crie um token jwt válido assim que o usuário acesse o localhost. Não é o ideal, visto que seria interessante um sistema de login e senha, mas como a table "users" não possuía o campo password, pra não adicionar uma complexidade adicional muito grande e talvez desnecessária, optei por esta linha de auto login, focando nas funcionalidades core do projeto.
+
+Além disso, alterei uma validação do zod pra forçar o ID sendo do tipo number, visto que era o que o graphql esperava (commit #ee197d098...) receber, mas chegava em string por algum motivo.
+
+Pra finalizar, solicitei a IA pra que fizesse a criação de testes no backend, onde foi realizado 100% de coverage dos services, além de testes na rota REST Users, além de também no graphql controller de user também.
 
 ## Recursos e Referências
 Links e materiais que consultei durante o desenvolvimento.
