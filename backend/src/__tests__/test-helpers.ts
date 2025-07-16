@@ -159,14 +159,14 @@ export class AuthDataFactory {
         }
     }
 
-    static createExecutionDTO(method: string, datap: any, tokenData?: any) {
+    static createExecutionDTO<T = any>(method: string, datap: any, tokenData?: any): T {
         return {
             tokenData: tokenData || this.createTokenData(),
             datap,
             method,
             customData: {},
             error: undefined
-        }
+        } as T
     }
 }
 
