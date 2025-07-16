@@ -1,0 +1,88 @@
+# ============================================
+# Docker Compose - Desafio Fullstack
+# PostgreSQL + Backend + Frontend
+# ============================================
+
+version: '3.8'
+
+services:
+  # ==================== PostgreSQL ====================
+  postgres:
+    image: postgres:15-alpine
+    container_name: fullstack-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: teste_backend_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d teste_backend_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - fullstack-network
+
+  # ==================== Backend ====================
+  backend:
+    build: ./backend
+    container_name: fullstack-backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres123@postgres:5432/teste_backend_db?schema=workspace"
+      NODE_ENV: development
+      PORT_ADMIN: 3000
+      JWT_SECRET_KEY: your-super-secret-jwt-key
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mount source for hot reload
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "
+        echo '🔄 Waiting for database...' &&
+        npx prisma migrate deploy &&
+        echo '🌱 Seeding database...' &&
+        yarn seed &&
+        echo '🚀 Starting backend...' &&
+        yarn dev
+      "
+    networks:
+      - fullstack-network
+
+  # ==================== Frontend ====================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=development
+    container_name: fullstack-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      NEXT_PUBLIC_GRAPHQL_URL: http://localhost:3000/graphql
+      NODE_ENV: development
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    networks:
+      - fullstack-network
+
+# ==================== Networks & Volumes ====================
+networks:
+  fullstack-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local 
