@@ -6,7 +6,7 @@ import { AppService } from './app.service'
 @ApiTags('📊 Analytics')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @Get()
   @ApiOperation({
@@ -33,29 +33,29 @@ export class AppController {
           properties: {
             message: {
               type: 'string',
-              example: 'Hello World!!! ✈️✈️'
+              example: 'Hello World!!! ✈️✈️',
             },
             LOCAL: {
               type: 'string',
-              example: 'development'
+              example: 'development',
             },
             PORT: {
               type: 'string',
-              example: '3000'
+              example: '3000',
             },
             date: {
               type: 'string',
               format: 'date-time',
-              example: '2024-01-15T10:30:00.000Z'
+              example: '2024-01-15T10:30:00.000Z',
             },
             version: {
               type: 'number',
-              example: 2.3
-            }
-          }
-        }
-      }
-    }
+              example: 2.3,
+            },
+          },
+        },
+      },
+    },
   })
   getHello(): any {
     return this.appService.getHello()
@@ -94,21 +94,21 @@ export class AppController {
       properties: {
         success: {
           type: 'boolean',
-          example: true
+          example: true,
         },
         timestamp: {
           type: 'string',
           format: 'date-time',
-          example: '2024-01-15T10:30:00.000Z'
+          example: '2024-01-15T10:30:00.000Z',
         },
         recordCount: {
           type: 'number',
           description: 'Número de registros retornados',
-          example: 50
+          example: 50,
         },
         message: {
           type: 'string',
-          example: 'Simplified analytics data retrieved successfully'
+          example: 'Simplified analytics data retrieved successfully',
         },
         data: {
           type: 'array',
@@ -122,7 +122,7 @@ export class AppController {
               user_classification: {
                 type: 'string',
                 enum: ['power_user', 'active_user', 'contributor', 'new_user', 'inactive_user'],
-                example: 'active_user'
+                example: 'active_user',
               },
               engagement_score: { type: 'number', example: 25.5 },
               total_posts: { type: 'number', example: 8 },
@@ -131,21 +131,21 @@ export class AppController {
               activity_status: {
                 type: 'string',
                 enum: ['highly_active', 'moderately_active', 'occasionally_active', 'dormant', 'no_activity'],
-                example: 'moderately_active'
-              }
-            }
-          }
-        }
-      }
-    }
+                example: 'moderately_active',
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 401,
-    description: 'Token JWT inválido ou ausente'
+    description: 'Token JWT inválido ou ausente',
   })
   @ApiResponse({
     status: 500,
-    description: 'Erro interno do servidor ou problema na query de analytics'
+    description: 'Erro interno do servidor ou problema na query de analytics',
   })
   async getAnalytics(): Promise<any> {
     return await this.appService.getComplexAnalytics()

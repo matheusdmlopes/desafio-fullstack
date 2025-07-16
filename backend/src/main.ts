@@ -23,7 +23,8 @@ async function bootstrap() {
   // 📋 Swagger Configuration
   const config = new DocumentBuilder()
     .setTitle('Desafio Full-Stack API')
-    .setDescription(`
+    .setDescription(
+      `
       🚀 **Backend API para Desafio Técnico Full-Stack**
       
       Esta API fornece endpoints REST e GraphQL para gerenciamento de:
@@ -36,7 +37,8 @@ async function bootstrap() {
       **🔐 Autenticação:** Todas as rotas protegidas requerem JWT Bearer Token.
       
       **🧪 Auto-Login:** Use POST /auth/auto-login para obter um token de demonstração.
-    `)
+    `,
+    )
     .setVersion('1.0')
     .addBearerAuth(
       {

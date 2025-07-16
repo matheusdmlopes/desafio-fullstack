@@ -8,7 +8,7 @@ import { Service } from './service'
 
 @Resolver()
 export class GraphQLController {
-  constructor(private readonly service: Service) { }
+  constructor(private readonly service: Service) {}
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => EntityResponse, { name: 'create' + moduleMetadata.name })

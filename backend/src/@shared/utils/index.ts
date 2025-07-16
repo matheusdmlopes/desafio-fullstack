@@ -15,34 +15,31 @@ export async function checkPermission(params: CheckPermissionParams): Promise<Ch
 
   // If no token is provided, deny access
   if (!token) {
-    return { permitted: false };
+    return { permitted: false }
   }
 
   try {
     // Extract user permissions from token
     // The token can have permissions in different structures based on how it comes from JWT strategy
-    let userPermissions: string[] = [];
+    let userPermissions: string[] = []
 
     if (token.permissions && Array.isArray(token.permissions)) {
       // Direct from JWT strategy
-      userPermissions = token.permissions;
+      userPermissions = token.permissions
     } else if (token.data && token.data.permissions && Array.isArray(token.data.permissions)) {
       // From token payload
-      userPermissions = token.data.permissions;
+      userPermissions = token.data.permissions
     } else if (token.tokenData && token.tokenData.permissions && Array.isArray(token.tokenData.permissions)) {
       // Nested structure
-      userPermissions = token.tokenData.permissions;
+      userPermissions = token.tokenData.permissions
     }
 
     // Check if user has all required permissions
-    const hasAllPermissions = requiredPermissions.every(permission =>
-      userPermissions.includes(permission)
-    );
+    const hasAllPermissions = requiredPermissions.every((permission) => userPermissions.includes(permission))
 
-    return { permitted: hasAllPermissions };
-
+    return { permitted: hasAllPermissions }
   } catch (error) {
-    console.error('Error checking permissions:', error);
-    return { permitted: false };
+    console.error('Error checking permissions:', error)
+    return { permitted: false }
   }
 }

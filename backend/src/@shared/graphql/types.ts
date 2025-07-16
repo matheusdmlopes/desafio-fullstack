@@ -147,16 +147,16 @@ export class WhereBase {
 }
 
 @InputType()
-export class AndWhere extends WhereBase { }
+export class AndWhere extends WhereBase {}
 
 @InputType()
-export class OrWhere extends WhereBase { }
+export class OrWhere extends WhereBase {}
 
 @InputType()
-export class AndWhereNot extends WhereBase { }
+export class AndWhereNot extends WhereBase {}
 
 @InputType()
-export class OrWhereNot extends WhereBase { }
+export class OrWhereNot extends WhereBase {}
 
 @InputType()
 export class GetEntityDTO {

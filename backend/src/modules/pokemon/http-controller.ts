@@ -9,7 +9,7 @@ import { Service } from './service'
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class HttpController {
-  constructor(private readonly service: Service) { }
+  constructor(private readonly service: Service) {}
 
   @Post()
   @ApiOperation({
@@ -18,7 +18,7 @@ export class HttpController {
       **Adiciona um novo Pokemon ao catálogo.**
       
       **🔐 Requer:** Permissão \`api-criar-pokemon\`
-    `
+    `,
   })
   @ApiResponse({ status: 201, description: 'Pokemon criado com sucesso' })
   @ApiResponse({ status: 400, description: 'Nome já existe ou dados inválidos' })
@@ -44,7 +44,7 @@ export class HttpController {
       - ✅ Ordenação por data de criação
       
       **🔐 Requer:** Permissão \`api-ler-pokemon\`
-    `
+    `,
   })
   @ApiQuery({ name: 'skip', required: false, type: 'number', description: 'Pular registros', example: 0 })
   @ApiQuery({ name: 'take', required: false, type: 'number', description: 'Quantos retornar', example: 10 })
@@ -68,14 +68,14 @@ export class HttpController {
                   type: { type: 'string', example: 'Electric' },
                   ability: { type: 'string', example: 'Static' },
                   image: { type: 'string', example: 'https://example.com/pikachu.jpg' },
-                  createdAt: { type: 'string', format: 'date-time' }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  createdAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   async getAll(@Req() req: any, @Query() query: any): Promise<EntityResponse> {
     const data: GetDTO = {
@@ -100,7 +100,7 @@ export class HttpController {
   @Get(':id')
   @ApiOperation({
     summary: '🔍 Get Pokemon by ID',
-    description: 'Busca um Pokemon específico pelo ID.'
+    description: 'Busca um Pokemon específico pelo ID.',
   })
   @ApiResponse({ status: 200, description: 'Pokemon encontrado' })
   @ApiResponse({ status: 404, description: 'Pokemon não encontrado' })
@@ -127,7 +127,7 @@ export class HttpController {
   @Put(':id')
   @ApiOperation({
     summary: '📝 Update Pokemon',
-    description: 'Atualiza dados de um Pokemon existente.'
+    description: 'Atualiza dados de um Pokemon existente.',
   })
   async update(@Req() req: any, @Param('id') id: string, @Body() data: Omit<UpdateDTO, 'id'>): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)
@@ -149,7 +149,7 @@ export class HttpController {
   @Delete(':id')
   @ApiOperation({
     summary: '🗑️ Delete Pokemon',
-    description: 'Remove um Pokemon do catálogo.'
+    description: 'Remove um Pokemon do catálogo.',
   })
   async delete(@Req() req: any, @Param('id') id: string): Promise<EntityResponse> {
     const numericId = parseInt(id, 10)

@@ -9,7 +9,7 @@ import { Service } from './service'
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class HttpController {
-  constructor(private readonly service: Service) { }
+  constructor(private readonly service: Service) {}
 
   @Post()
   @ApiOperation({
@@ -35,17 +35,17 @@ export class HttpController {
         title: {
           type: 'string',
           description: 'Título do post',
-          example: 'Meu Primeiro Post'
+          example: 'Meu Primeiro Post',
         },
         content: {
           type: 'string',
           description: 'Conteúdo do post (opcional)',
-          example: 'Este é o conteúdo do meu primeiro post...'
+          example: 'Este é o conteúdo do meu primeiro post...',
         },
         published: {
           type: 'boolean',
           description: 'Se o post deve ser publicado',
-          example: true
+          example: true,
         },
         author: {
           type: 'object',
@@ -57,14 +57,14 @@ export class HttpController {
                 id: {
                   type: 'number',
                   description: 'ID do usuário autor',
-                  example: 1
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  example: 1,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 201,
@@ -87,14 +87,14 @@ export class HttpController {
                   published: { type: 'boolean', example: true },
                   authorId: { type: 'number', example: 1 },
                   createdAt: { type: 'string', format: 'date-time' },
-                  updatedAt: { type: 'string', format: 'date-time' }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Token JWT inválido' })
   @ApiResponse({ status: 403, description: 'Sem permissão para criar posts' })
@@ -124,11 +124,35 @@ export class HttpController {
       **🔐 Requer:** Permissão \`api-ler-post\`
     `,
   })
-  @ApiQuery({ name: 'skip', required: false, type: 'number', description: 'Número de registros para pular', example: 0 })
-  @ApiQuery({ name: 'take', required: false, type: 'number', description: 'Número de registros para retornar', example: 10 })
-  @ApiQuery({ name: 'andWhere', required: false, type: 'string', description: 'Filtros AND em JSON', example: '[{"field":"published","fieldType":"valueBoolean","valueBoolean":true}]' })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: 'number',
+    description: 'Número de registros para pular',
+    example: 0,
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    type: 'number',
+    description: 'Número de registros para retornar',
+    example: 10,
+  })
+  @ApiQuery({
+    name: 'andWhere',
+    required: false,
+    type: 'string',
+    description: 'Filtros AND em JSON',
+    example: '[{"field":"published","fieldType":"valueBoolean","valueBoolean":true}]',
+  })
   @ApiQuery({ name: 'orWhere', required: false, type: 'string', description: 'Filtros OR em JSON' })
-  @ApiQuery({ name: 'orderBy', required: false, type: 'string', description: 'Ordenação em JSON', example: '{"field":"createdAt","direction":"desc"}' })
+  @ApiQuery({
+    name: 'orderBy',
+    required: false,
+    type: 'string',
+    description: 'Ordenação em JSON',
+    example: '{"field":"createdAt","direction":"desc"}',
+  })
   @ApiResponse({
     status: 200,
     description: 'Lista de posts retornada com sucesso',
@@ -155,20 +179,20 @@ export class HttpController {
                     properties: {
                       id: { type: 'number', example: 1 },
                       name: { type: 'string', example: 'João Silva' },
-                      email: { type: 'string', example: 'joao@email.com' }
-                    }
+                      email: { type: 'string', example: 'joao@email.com' },
+                    },
                   },
                   categories: {
                     type: 'array',
-                    description: 'Categorias do post'
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                    description: 'Categorias do post',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   async getAll(@Req() req: any, @Query() query: any): Promise<EntityResponse> {
     const data: GetDTO = {
@@ -208,7 +232,7 @@ export class HttpController {
     name: 'id',
     type: 'number',
     description: 'ID único do post',
-    example: 1
+    example: 1,
   })
   @ApiResponse({
     status: 200,
@@ -229,14 +253,14 @@ export class HttpController {
                   title: { type: 'string', example: 'Post Específico' },
                   content: { type: 'string', example: 'Conteúdo detalhado...' },
                   published: { type: 'boolean', example: true },
-                  authorId: { type: 'number', example: 1 }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  authorId: { type: 'number', example: 1 },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 400, description: 'ID inválido' })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })
@@ -282,9 +306,9 @@ export class HttpController {
       properties: {
         title: { type: 'string', example: 'Título Atualizado' },
         content: { type: 'string', example: 'Conteúdo atualizado...' },
-        published: { type: 'boolean', example: false }
-      }
-    }
+        published: { type: 'boolean', example: false },
+      },
+    },
   })
   @ApiResponse({ status: 200, description: 'Post atualizado com sucesso' })
   @ApiResponse({ status: 404, description: 'Post não encontrado' })

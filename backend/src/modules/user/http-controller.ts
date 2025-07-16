@@ -9,7 +9,7 @@ import { Service } from './service'
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT-auth')
 export class HttpController {
-  constructor(private readonly service: Service) { }
+  constructor(private readonly service: Service) {}
 
   @Post()
   @ApiOperation({
@@ -35,15 +35,15 @@ export class HttpController {
           type: 'string',
           format: 'email',
           description: 'Email único do usuário',
-          example: 'joao.silva@email.com'
+          example: 'joao.silva@email.com',
         },
         name: {
           type: 'string',
           description: 'Nome completo do usuário (opcional)',
-          example: 'João Silva'
-        }
-      }
-    }
+          example: 'João Silva',
+        },
+      },
+    },
   })
   @ApiResponse({
     status: 201,
@@ -64,14 +64,14 @@ export class HttpController {
                   email: { type: 'string', example: 'joao.silva@email.com' },
                   name: { type: 'string', example: 'João Silva' },
                   createdAt: { type: 'string', format: 'date-time' },
-                  updatedAt: { type: 'string', format: 'date-time' }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                  updatedAt: { type: 'string', format: 'date-time' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   @ApiResponse({ status: 400, description: 'Email já existe ou dados inválidos' })
   @ApiResponse({ status: 403, description: 'Sem permissão para criar usuários' })
@@ -100,8 +100,20 @@ export class HttpController {
       **🔐 Requer:** Permissão \`api-ler-user\`
     `,
   })
-  @ApiQuery({ name: 'skip', required: false, type: 'number', description: 'Registros para pular (padrão: 0)', example: 0 })
-  @ApiQuery({ name: 'take', required: false, type: 'number', description: 'Registros para retornar (padrão: 10)', example: 10 })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    type: 'number',
+    description: 'Registros para pular (padrão: 0)',
+    example: 0,
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    type: 'number',
+    description: 'Registros para retornar (padrão: 10)',
+    example: 10,
+  })
   @ApiResponse({
     status: 200,
     description: 'Lista de usuários com relacionamentos',
@@ -130,9 +142,9 @@ export class HttpController {
                       properties: {
                         id: { type: 'number' },
                         title: { type: 'string' },
-                        published: { type: 'boolean' }
-                      }
-                    }
+                        published: { type: 'boolean' },
+                      },
+                    },
                   },
                   profile: {
                     type: 'object',
@@ -140,16 +152,16 @@ export class HttpController {
                     description: 'Perfil do usuário (se existir)',
                     properties: {
                       id: { type: 'number' },
-                      bio: { type: 'string' }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                      bio: { type: 'string' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
   async getAll(@Req() req: any, @Query() query: any): Promise<EntityResponse> {
     const data: GetDTO = {
@@ -189,11 +201,11 @@ export class HttpController {
     name: 'id',
     type: 'number',
     description: 'ID único do usuário',
-    example: 1
+    example: 1,
   })
   @ApiResponse({
     status: 200,
-    description: 'Usuário encontrado com relacionamentos completos'
+    description: 'Usuário encontrado com relacionamentos completos',
   })
   @ApiResponse({ status: 400, description: 'ID inválido' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
@@ -233,9 +245,9 @@ export class HttpController {
       type: 'object',
       properties: {
         email: { type: 'string', format: 'email', example: 'novo.email@example.com' },
-        name: { type: 'string', example: 'Novo Nome' }
-      }
-    }
+        name: { type: 'string', example: 'Novo Nome' },
+      },
+    },
   })
   @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso' })
   @ApiResponse({ status: 404, description: 'Usuário não encontrado' })

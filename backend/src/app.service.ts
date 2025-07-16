@@ -4,7 +4,7 @@ import { PrismaService } from './infra/database/prisma.service'
 
 @Injectable()
 export class AppService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   getHello(): any {
     const publicPath = join(__dirname, '..', 'dist')
@@ -37,23 +37,21 @@ export class AppService {
 
       // Convert BigInt fields to regular numbers for JSON serialization
       const analyticsData = Array.isArray(rawAnalyticsData)
-        ? rawAnalyticsData.map(record => {
-          const convertedRecord = { ...record }
+        ? rawAnalyticsData.map((record) => {
+            const convertedRecord = { ...record }
 
-          // Convert all BigInt fields to Number
-          Object.keys(convertedRecord).forEach(key => {
-            if (typeof convertedRecord[key] === 'bigint') {
-              convertedRecord[key] = Number(convertedRecord[key])
-            }
+            // Convert all BigInt fields to Number
+            Object.keys(convertedRecord).forEach((key) => {
+              if (typeof convertedRecord[key] === 'bigint') {
+                convertedRecord[key] = Number(convertedRecord[key])
+              }
+            })
+
+            return convertedRecord
           })
-
-          return convertedRecord
-        })
         : []
 
-      console.log(
-        `✅ Analytics query completed. Returned ${analyticsData.length} records`,
-      )
+      console.log(`✅ Analytics query completed. Returned ${analyticsData.length} records`)
 
       return {
         success: true,

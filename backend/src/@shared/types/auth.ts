@@ -22,7 +22,7 @@ export interface MethodType<T, Y> {
 
 export async function genericCaller<T>(context: any, data: any, method: string): Promise<T> {
   try {
-    const tokenData = context?.req?.user || context?.req?.tokenData || context?.user;
+    const tokenData = context?.req?.user || context?.req?.tokenData || context?.user
 
     return await this.service.execute({
       datap: data,

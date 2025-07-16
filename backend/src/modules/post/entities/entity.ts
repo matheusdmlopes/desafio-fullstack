@@ -46,7 +46,7 @@ export class EntityPagination extends PaginationResponse {
 }
 
 @InputType('Get' + moduleMetadata.name + 'sDTO')
-export class GetDTO extends GetEntityDTO { }
+export class GetDTO extends GetEntityDTO {}
 
 @InputType('Create' + moduleMetadata.name + 'DTO')
 export class CreateDTO implements createDTODBType {

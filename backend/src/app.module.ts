@@ -45,5 +45,5 @@ import { UserModule } from './modules/user/module'
 export class AppModule implements NestModule {
   // TODO: verificar de passar essas exportações para dentro do módulo.
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  configure(consumer: MiddlewareConsumer) { }
+  configure(consumer: MiddlewareConsumer) {}
 }
