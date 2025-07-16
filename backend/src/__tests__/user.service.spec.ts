@@ -109,7 +109,17 @@ describe('UserService', () => {
             const result = await service.execute(executionDTO)
 
             // Assert
-            expect(result).toEqual(ResponseFactory.createErrorResponse('conflict', 'Email já existe'))
+            expect(result).toEqual({
+                error: {
+                    errors: [
+                        {
+                            message: 'Email já existe',
+                            path: ['email'],
+                            code: 'custom',
+                        },
+                    ],
+                },
+            })
             expect(mockPrisma.user.create).not.toHaveBeenCalled()
         })
 
@@ -153,8 +163,16 @@ describe('UserService', () => {
             // Assert
             expect(result).toEqual(ResponseFactory.createSuccessResponse(users, 2))
             expect(mockPrisma.user.findMany).toHaveBeenCalledWith({
+                where: {},
                 take: 10,
-                skip: 0
+                skip: 0,
+                orderBy: {
+                    createdAt: 'desc',
+                },
+                include: {
+                    posts: true,
+                    profile: true,
+                },
             })
             expect(mockPrisma.user.count).toHaveBeenCalled()
         })
@@ -204,7 +222,11 @@ describe('UserService', () => {
             })
             expect(mockPrisma.user.update).toHaveBeenCalledWith({
                 where: { id: userId },
-                data: { email: updateData.email, name: updateData.name }
+                data: { email: updateData.email, name: updateData.name },
+                include: {
+                    posts: true,
+                    profile: true,
+                },
             })
         })
 
@@ -224,7 +246,7 @@ describe('UserService', () => {
             const result = await service.execute(executionDTO)
 
             // Assert
-            expect(result).toEqual(ResponseFactory.createErrorResponse('notFound', 'Usuário não encontrado'))
+            expect(result).toEqual(ResponseFactory.createErrorResponse('notFound', 'User não encontrado'))
             expect(mockPrisma.user.update).not.toHaveBeenCalled()
         })
     })
@@ -275,7 +297,7 @@ describe('UserService', () => {
             const result = await service.execute(executionDTO)
 
             // Assert
-            expect(result).toEqual(ResponseFactory.createErrorResponse('notFound', 'Usuário não encontrado'))
+            expect(result).toEqual(ResponseFactory.createErrorResponse('notFound', 'User não encontrado'))
             expect(mockPrisma.user.delete).not.toHaveBeenCalled()
         })
     })

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { AppController } from '../app.controller'
 import { AppService } from '../app.service'
+import { PrismaService } from '../infra/database/prisma.service'
+import { createMockPrismaService } from './test-helpers'
 
 describe('AppController', () => {
   let appController: AppController
@@ -9,7 +11,13 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        AppService,
+        {
+          provide: PrismaService,
+          useValue: createMockPrismaService(),
+        },
+      ],
     }).compile()
 
     appController = app.get<AppController>(AppController)
