@@ -181,6 +181,23 @@ export default function HomePage() {
                     <strong>A ideia:</strong> rotas públicas (/pokemons, /posts, etc) e rotas protegidas
                     (/login, /admin/*), trazendo assim uma solução "completa" dentro do contexto do projeto.
                   </p>
+                  <p className="text-gray-600 mb-6">
+                    No consumo dos dados do backend temos tanto rotas REST quanto queries GraphQL, pra maioria dos casos estou utilizando graphql e, pro cenário específico do caso do blog irei utilizar /posts/:id , visto que no backend essa query não está implementada. Rota esta que é protegida pelo jwt, então estou buscando maneiras de, invés de comentar a proteção, fazê-la funcionar de fato.
+                  </p>
+
+                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">Back End</h3>
+                  <p className="text-gray-600 mb-4">
+                    No back end, haviam validações de token JWT pra todas rotas e queries (tanto REST quanto graphql), inicialmente pro desenvolvimento do front end comentei os jwtguards pra conseguir desenvolver as telas.
+                  </p>
+                  <p className="text-gray-600 mb-4">
+                    A strategy jwt não estava criada, então pedi pro Claude criar tanto a estratégia quanto um sistema de "auto login", pra que crie um token jwt válido assim que o usuário acesse o localhost. Não é o ideal, visto que seria interessante um sistema de login e senha, mas como a table "users" não possuía o campo password, pra não adicionar uma complexidade adicional muito grande e talvez desnecessária, optei por esta linha de auto login, focando nas funcionalidades core do projeto.
+                  </p>
+                  <p className="text-gray-600 mb-4">
+                    Além disso, alterei uma validação do zod pra forçar o ID sendo do tipo number, visto que era o que o graphql esperava (commit #ee197d098...) receber, mas chegava em string por algum motivo.
+                  </p>
+                  <p className="text-gray-600 mb-6">
+                    Pra finalizar, solicitei a IA pra que fizesse a criação de testes no backend, onde foi realizado 100% de coverage dos services, além de testes na rota REST Users, além de também no graphql controller de user também.
+                  </p>
 
                   <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Recursos e Referências</h2>
                   <p className="text-gray-600 mb-4">Links e materiais que consultei durante o desenvolvimento.</p>
@@ -204,6 +221,18 @@ export default function HomePage() {
                   <ul className="list-disc list-inside space-y-1 text-gray-600 mb-6">
                     <li><a href="https://nextjs.org/docs/app/api-reference/cli/create-next-app" className="text-blue-600 hover:underline">Next.js CLI Reference</a></li>
                     <li><a href="https://medium.com/@tahnyybelguith/consuming-apis-with-next-js-building-data-driven-web-applications-6e4c2d35a7f4" className="text-blue-600 hover:underline">Medium - APIs with Next.js</a></li>
+                    <li><a href="https://daily.dev/blog/next-js-graphql-integration-basics" className="text-blue-600 hover:underline">Daily.dev - Next.js GraphQL Integration</a></li>
+                  </ul>
+
+                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">NestJS</h3>
+                  <ul className="list-disc list-inside space-y-1 text-gray-600 mb-6">
+                    <li><a href="https://docs.nestjs.com/recipes/passport" className="text-blue-600 hover:underline">NestJS Passport Documentation</a></li>
+                    <li><a href="https://blog.mocsolucoes.com.br/desenvolvimento-web/nestjs-vs-expressjs-qual-escolher/" className="text-blue-600 hover:underline">Blog - NestJS vs ExpressJS</a></li>
+                  </ul>
+
+                  <h3 className="text-xl font-bold text-gray-900 mt-6 mb-3">TypeScript</h3>
+                  <ul className="list-disc list-inside space-y-1 text-gray-600 mb-6">
+                    <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Errors/BigInt_not_serializable" className="text-blue-600 hover:underline">MDN - BigInt Serialization Issues</a></li>
                   </ul>
                 </div>
               </div>
