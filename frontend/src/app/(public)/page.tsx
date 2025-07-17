@@ -56,20 +56,6 @@ export default function HomePage() {
               </div>
             </Link>
 
-            {/* Users Card */}
-            <Link
-              href="/users"
-              className="group p-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-            >
-              <div className="text-white">
-                <Users className="h-8 w-8 mb-4" />
-                <h3 className="text-xl font-bold mb-2">Usuários</h3>
-                <p className="text-blue-100">
-                  Conheça os perfis de usuários e suas contribuições na plataforma.
-                </p>
-              </div>
-            </Link>
-
             {/* Blog Card */}
             <Link
               href="/posts"
